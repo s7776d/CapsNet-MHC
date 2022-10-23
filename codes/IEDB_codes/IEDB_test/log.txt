@@ -1,0 +1,5 @@
+22-10-22 08:27 - [Encoding method2]: blosum
+22-10-22 08:27 - [max_len_hla]: 385
+22-10-22 08:27 - [max_len_pep]: 15
+22-10-22 08:28 - [Testing result file]: /content/drive/MyDrive/CapsMHC/codes_IEDB/test_IEDB/weekly_result.txt
+22-10-22 08:28 - [Testing metric result file]: /content/drive/MyDrive/CapsMHC/codes_IEDB/test_IEDB/weekly_result_METRICS.txt

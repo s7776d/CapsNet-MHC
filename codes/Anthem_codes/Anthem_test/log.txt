@@ -1,0 +1,4 @@
+22-10-22 05:57 - [Encoding method2]: blosum
+22-10-22 05:57 - [max_len_hla]: 34
+22-10-22 05:57 - [max_len_pep]: 15
+22-10-22 05:59 - [Testing result file]: ../weekly_result.txt

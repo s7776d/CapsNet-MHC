@@ -1,0 +1,27 @@
+{    
+    "do_train": true,
+    "do_test": true,
+    "Data": {
+        "data_file":"train_data.txt",
+        "test_file": "test_data.txt",
+        "max_len_hla": 34,
+        "max_len_pep": 15
+    },
+    "Training": {
+        "epochs":100,
+        "start_lr":1e-3,
+        "min_lr": 0.000001,
+        "grad_clip": 0.5,
+        "batch_size": 1024,
+        "loss_delta": 0.0001
+    },
+    "Paths": {
+        "working_dir": "Anthem_test"
+    },
+    "Model": {
+    "encoding_method": "blosum",
+	"encoding_method2":"blosum"
+    },
+    "model_count": 5,
+    "base_model_count" : 1
+}
