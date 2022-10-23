@@ -7,7 +7,7 @@
 
 
 ### Introduction
-There are two type of data for train and evaluate our model. The data are different from each other, so in order to feed the model and extract their features, the extraction network should be adjusted based on the length of their sequences. The data are different from each other, so in order to feed the model and extract their features, the extraction network should be adjusted based on the length of their sequences.<br>
+There are two type of data for train and evaluate our <b> unique model </b>. The data are different from each other, so in order to feed the model and extract their features, the extraction network should be adjusted based on the length of their sequences. The data are different from each other, so in order to feed the model and extract their features, the extraction network should be adjusted based on the length of their sequences.<br>
 
 In each of the dataset and model folders, codes and data are included based on the type of data:
 - Anthem_codes and Anthme_dataset are develop for training and test based on Anthem data
