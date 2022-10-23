@@ -7,21 +7,22 @@
 
 
 ### Introduction
+There are two type of data for train and evaluate our model. The data are different from each other, so in order to feed the model and extract their features, the extraction network should be adjusted based on the length of their sequences. The data are different from each other, so in order to feed the model and extract their features, the extraction network should be adjusted based on the length of their sequences.<br>
 
-There is two type of codes and dataset directory:
+In each of the dataset and model folders, codes and data are included based on the type of data:
 - Anthem_codes and Anthme_dataset are develop for training and test based on Anthem data
 - IEDB_codes and IEDB_dataset are develop for training and test based on IEDB data
  
 
 ### Testing: 
 
-- For Anthem data in Anthem_codes our final ensemble prediction model is stored in the "Anthem_test" folder, suppose now we want to output testing results of the final model in "Anthem_test".
+- For Anthem data in Anthem_codes our final prediction model is stored in the "Anthem_test" folder, suppose now we want to output testing results of the final model in "Anthem_test".
 
   1) In the file "Anthem_test/config.json", the "test_file" refers to the file name of the testing set. All the testing files also need to be stored in the folder "Anthem_dataset". In the folder "Anthem_dataset", the "test_data.txt" is the testing set we used to compare our results with other IEDB benchmark algorithms. <br>
   2) Back to the directory "Anthem_codes". Run in the command line:<br>
   "python test.py Anthem_test/config.json". After the testing process finishing, the testing results will be output to "Anthem_test", which are "weekly_result.txt" in detail, we uses this file in "Metrics_Calculator.ipynb" and extract all of our result figures.<br>
 
-- For IEDB data in IEDB_codes our final ensemble prediction model is stored in the "IEDB_test" folder, suppose now we want to output testing results of the final model in "IEDB_test".
+- For IEDB data in IEDB_codes our final prediction model is stored in the "IEDB_test" folder, suppose now we want to output testing results of the final model in "IEDB_test".
 
   1) In the file "IEDB_test/config.json", the "test_file" refers to the file name of the testing set. All the testing files also need to be stored in the folder "IEDB_dataset". In the folder "IEDB_dataset", the "testing_set.txt" is the testing set we used to compare our results with other IEDB benchmark algorithms. <br>
   2) Back to the directory "IEDB_codes". Run in the command line:<br>
