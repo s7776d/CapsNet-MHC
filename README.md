@@ -3,7 +3,7 @@
 ### Deep learning prediction of MHC-I peptide binding with Capsule Networks
 
 
-<p style="text-align:center;"><img src="CapsMHC.png" height="300px"></p>
+<p style="text-align:center;"><img src="CapsNet-MHC.png" height="300px"></p>
 
 
 ### Introduction
