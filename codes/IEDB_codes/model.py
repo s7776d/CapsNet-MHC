@@ -292,7 +292,7 @@ class Predictor(nn.Module):
             nn.Dropout(dropout),
             nn.Linear(200, 200),
             nn.LeakyReLU(),
-            nn.Dropout(dropout)
+            nn.Dropout(dropout),
 
             nn.Linear(200, 1)
         )
