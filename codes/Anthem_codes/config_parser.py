@@ -32,11 +32,11 @@ class Config:
 
     @property
     def data_file(self):
-        return os.path.join(BASE_DIR, '..',  'Anthem_dataset', self.config['Data']['data_file'])
+        return os.path.join(BASE_DIR, '../..',  'dataset/Anthem_dataset', self.config['Data']['data_file'])
 
     @property
     def test_file(self):
-        return os.path.join(BASE_DIR, '..', 'Anthem_dataset', self.config['Data']['test_file'])
+        return os.path.join(BASE_DIR, '../..', 'dataset/Anthem_dataset', self.config['Data']['test_file'])
 
 
     @property
