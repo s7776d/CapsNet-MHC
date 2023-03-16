@@ -80,7 +80,6 @@ class CapsLayer(nn.Module):
         stdv = 1. / math.sqrt(self.input_caps)
         self.weights.data.uniform_(-stdv, stdv)
 
-    # 输入的x格式为：(batch_m, input_caps, input_dim)
     def forward(self, u):
         u = u.unsqueeze(2)
         #print(u.shape[0])
@@ -116,7 +115,7 @@ class AgreementRouting(nn.Module):
         v = squash(s)
 
         if self.n_iterations > 0:
-            b_batch = self.b.expand((batch_size, input_caps, output_caps))  # 这块带上batch是因为每个样本的c都不一样
+            b_batch = self.b.expand((batch_size, input_caps, output_caps)) 
             for r in range(self.n_iterations):
                 v = v.unsqueeze(1)
                 b_batch = b_batch + (u_predict * v).sum(-1)
@@ -127,71 +126,6 @@ class AgreementRouting(nn.Module):
 
         return v
 
-'''class CNN_Peptide_Encoder(nn.Module):
-    def __init__(self, input_dim):
-        super(CNN_Peptide_Encoder, self).__init__()
-
-
-        self.conv_0 =nn.Conv1d(input_dim, 32, kernel_size=1,bias=False)
-        #self.att_0 = Attention(32,15)
-
-        self.conv = torch.nn.Sequential()
-        self.conv.add_module("conv_1", nn.Conv1d(32, 64, kernel_size=3))
-        self.conv.add_module("bn_1",nn.BatchNorm1d(64))
-        self.conv.add_module("ReLU_1",nn.LeakyReLU())
-        self.conv.add_module("conv_2", nn.Conv1d(64, 10, kernel_size=3))
-        self.conv.add_module("bn_2",nn.BatchNorm1d(10))
-        self.conv.add_module("ReLU_2",nn.LeakyReLU())
-
-    def forward(self, x):
-        x = self.conv_0(x)
-        #print('x size for att pep : ', list(x.size()))
-        #y,att=self.att_0(x)
-        #print('y size for att pep : ', list(y.size()))
-        y=self.conv(x)
-        #print('y after conv size for att pep : ', list(y.size()))
-        # x is (batch_size, 10, 11), due to the max_len_pep is 15
-        return y
-
-class CNN_HLA_Encoder(nn.Module):
-    def __init__(self,input_dim):
-        super(CNN_HLA_Encoder, self).__init__()
-
-        self.conv = torch.nn.Sequential()
-
-        self.conv.add_module("conv_1", nn.Conv1d(input_dim, 64, kernel_size=3))
-        self.conv.add_module("bn_1",nn.BatchNorm1d(64))
-        self.conv.add_module("ReLU_1",nn.LeakyReLU())
-        self.conv.add_module("conv_1_2", nn.Conv1d(64, 128, kernel_size=4))
-        self.conv.add_module("bn_1_2",nn.BatchNorm1d(128))
-        self.conv.add_module("ReLU_1_2",nn.LeakyReLU())       
-        self.conv.add_module("maxpool_1", torch.nn.MaxPool1d(kernel_size=4))
-
-
-        #self.att_0 = Attention2(128,95)
-
-        self.conv1 = torch.nn.Sequential()
-       
-        self.conv1.add_module("conv_2", nn.Conv1d(128, 256, kernel_size=4)) # out 92
-        self.conv1.add_module("bn_2",nn.BatchNorm1d(256))
-        self.conv1.add_module("ReLU_2",nn.LeakyReLU())
-        self.conv1.add_module("maxpool_2", torch.nn.MaxPool1d(kernel_size=4)) #out 23
-        self.conv1.add_module("conv_3", nn.Conv1d(256, 10, kernel_size=2)) #out 22
-        self.conv1.add_module("bn_3",nn.BatchNorm1d(10))
-        self.conv1.add_module("ReLU_3",nn.LeakyReLU())
-        self.conv1.add_module("maxpool_3", torch.nn.MaxPool1d(kernel_size=2)) # out 11
-
-
-    def forward(self, x):
-        x = self.conv(x)
-        #print('x size for att hla : ', list(x.size()))
-        #y,att=self.att_0(x)
-        #print('y size for att hla : ', list(y.size()))
-        y=self.conv1(x)
-        #print('y after conv size for att hla : ', list(y.size()))
-        # x is (batch_size, 10, 11), due to the max_len_pep is 15
-        return y
-'''
 
 class CNN_Peptide_Encoder(nn.Module):
     def __init__(self, input_dim):
@@ -211,12 +145,8 @@ class CNN_Peptide_Encoder(nn.Module):
 
     def forward(self, x):
         x = self.conv_0(x)
-        #print('x size for att pep : ', list(x.size()))
         y,att=self.att_0(x)
-        #print('y size for att pep : ', list(y.size()))
         y=self.conv(y)
-        #print('y after conv size for att pep : ', list(y.size()))
-        # x is (batch_size, 10, 11), due to the max_len_pep is 15
         return y
 
 class CNN_HLA_Encoder(nn.Module):
@@ -249,14 +179,9 @@ class CNN_HLA_Encoder(nn.Module):
 
 
     def forward(self, x):
-        #print(x.shape)
         x = self.conv(x)
-        #print('x size for att hla : ', x.shape)
         y,att=self.att_0(x)
-        #print('y size for att hla : ', y.shape)
         y=self.conv1(y)
-        #print('y after conv size for att hla : ', list(y.size()))
-        # x is (batch_size, 10, 11), due to the max_len_pep is 15
         return y
 
 class Attention(nn.Module):
@@ -289,7 +214,6 @@ class Attention(nn.Module):
         attn_weight2=torch.reshape(attn_weight, (attn_weight.size(0),attn_weight.size(1)))
 
         return out,attn_weight2
-        # [batch,in_channels,seq_length]
 
 
 ###############################################################################################################################
@@ -313,11 +237,7 @@ class Attention2(nn.Module):
         pos = [torch.eye(seq_feature.size(2))]*seq_feature.size(0)
         pos =  torch.stack(pos,dim = 0).cuda()  
         seq_feature = torch.cat([seq_feature,pos],dim=1)
-        # print(seq_feature)
-        # print(seq_feature.size())
-        # exit()
-
-
+        
         seq_feature = seq_feature.permute(0,2,1).contiguous()
         # shape to [batch, seq_length,in_channels+seq_length]
         attn_weight = self.fc(seq_feature)
@@ -332,14 +252,7 @@ class Attention2(nn.Module):
         # shape to [batch, seq_length,in_channels]
         # out = out+seq_feature
         out = out.permute(0,2,1).contiguous()
-        # shape to [batch, in_channels,seq_length]        
-        # attn_weight = attn_weight.permute(0,2,1).contiguous()
-        # # output dimension: [batch, 1, seq_length]  
-        # out = torch.bmm(attn_weight,seq_feature)
-        # # get[batch,1,in_channels]
-        # print(out.size())
-        # exit()
-
+        
         return out, attn_weight.view(attn_weight.size(0),-1)
         # [batch,1,in_channels]
 
@@ -355,78 +268,31 @@ class Context_extractor(nn.Module):
     def __init__(self, seq_size):
         super(Context_extractor, self).__init__()
         self.net = CapsLayer(input_caps=40, input_dim=11, output_caps=20, output_dim=11)
-        #self.conv_0 =nn.Conv1d(20, 20, kernel_size=1,bias=False)
-        #self.att_0 = Attention(20, 1)
-        #print('herekjhigsdlchsdgdugyu')
-        #self.prelu = nn.PReLU()
-        #print('hello')
-        #self.dropout = nn.Dropout(p=0.5)
         self.out_vector_dim = 20 * seq_size
 
     def forward(self, list_tensors):
         out = torch.cat(list_tensors, dim=1)
-        #print('size of out 1 :', list(out.size()))
         out, out_ = self.net(out)
-        #x = self.conv_0(out)
-        #print('size of out :', list(out.size()))
-        #out1, out2 = self.att_0(x)
-        #print(out)
-        #print(ty)
-        #out_1 = torch.Tensor(out[0])
-
-        #out_2 = torch.Tensor(out[1])
-        #out = torch.cat((out_1, out_2), dim=1)
-        #out = np.asarray(out, dtype=np.float64)
-        #out = torch.from_numpy(out)
-        #out = np.array(out, dtype=np.float64)
-        #out = torch.Tensor(out)
-        #print('size of out1 :', list(out1.size()))
-        # flatten
-        #out = torch.flatten(out)
-        #print(list(out.view(out.size(0), -1).size()))
+        
         return out.view(out.size(0), -1)
 
 #####################################################################################################################
-#
+
 # Predictor
-#
 
-class Context_extractor00(nn.Module):
-
-    def __init__(self, seq_size):
-        super(Context_extractor00, self).__init__()
-        self.net = nn.Sequential(
-            Conv1dSame(20, 256, 3),
-            nn.LeakyReLU(),
-            Conv1dSame(256, 64, 3),
-            nn.LeakyReLU(),
-        )
-        self.out_vector_dim = 64 * seq_size
-
-    def forward(self, list_tensors):
-        out = torch.cat(list_tensors, dim=1)
-        #print('size of out 1:', list(out.size()))
-        out = self.net(out)
-        # flatten
-        #print('size of out :', list(out.size()))
-        #print(list(out.view(out.size(0), -1).size()))
-        return out.view(out.size(0), -1)
 
 ##############
 class Predictor(nn.Module):
 
     def __init__(self, input_size):
-        super(Predictor, self).__init__()
+        super(Predictor, self, dropout).__init__()
         self.net = nn.Sequential(
             nn.Linear(input_size, 200),
             nn.LeakyReLU(),
-            nn.Dropout(0.5),
+            nn.Dropout(dropout),
             nn.Linear(200, 200),
             nn.LeakyReLU(),
-            nn.Dropout(0.5),
-            # nn.Linear(1024, 512),
-            # nn.LeakyReLU(),
-            # nn.Dropout(0.5),
+            nn.Dropout(dropout)
 
             nn.Linear(200, 1)
         )
@@ -434,9 +300,6 @@ class Predictor(nn.Module):
 
     def forward(self, context_vector):
         out = self.net(context_vector)
-        #print('here out is : ', out)
-        #print('sadadd', list(self.out_act(out).size()))
-        #print('out', out)
         return self.out_act(out)
 
 #####################################################################################################################
@@ -446,7 +309,7 @@ class Predictor(nn.Module):
 
 
 class Model(nn.Module):
-    def __init__(self, config):
+    def __init__(self, config, dropout):
         super(Model, self).__init__()
 
         self.encoder_hla_a2 = CNN_HLA_Encoder(23)
@@ -454,23 +317,14 @@ class Model(nn.Module):
         self.encoder_peptide2 = CNN_Peptide_Encoder(23)
         
         self.context_extractor2 = Context_extractor(11)
-        self.predictor = Predictor(self.context_extractor2.out_vector_dim)
+        self.predictor = Predictor(self.context_extractor2.out_vector_dim, dropout)
 
     def forward(self, hla_a_seqs, hla_a_mask, hla_a_seqs2, hla_a_mask2,peptides, pep_mask,peptides2,pep_mask2):
 
         hla_out2  = self.encoder_hla_a2(hla_a_seqs2)
         pep_out2  = self.encoder_peptide2(peptides)
-        #print(hla_out2.size())
-        #print(pep_out2.size())
-        #print(([hla_out2, pep_out2]))
         context2  = self.context_extractor2([hla_out2, pep_out2])
         
-        #print(list(context2.size()))#(list(context2.size()))
-        #print(context2.size())
-        #context2 = torch.flatten(context2)
-        #print(list(context2.size()))
-        #context2 = torch.reshape(context2, (704))
-        #print(len(context2))
         
         ic50 = self.predictor(context2)
         #print('ic50', ic50)
