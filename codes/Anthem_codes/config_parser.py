@@ -42,7 +42,11 @@ class Config:
     @property
     def model_config(self):
         return self.config['Model']
-
+    
+    @property
+    def dropout(self):
+        return self.config['dropout']
+    
     @property
     def grad_clip(self):
         return self.config['Training']['grad_clip']
