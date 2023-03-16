@@ -284,8 +284,8 @@ class Context_extractor(nn.Module):
 ##############
 class Predictor(nn.Module):
 
-    def __init__(self, input_size):
-        super(Predictor, self, dropout).__init__()
+    def __init__(self, input_size, dropout):
+        super(Predictor, self).__init__()
         self.net = nn.Sequential(
             nn.Linear(input_size, 200),
             nn.LeakyReLU(),
