@@ -55,20 +55,12 @@ def test(config, data_provider):
         for k in range(config.model_count):
     # load and prepare model
              state_dict = torch.load(config.model_save_path(p*config.model_count+k))
-             model = Model(config)
+             model = Model(config, config.dropout)
              model.load_state_dict(state_dict)
              model.to(device)
              model.eval()
              temp_dict={}
              data_provider.new_epoch()
-             #print('here')
-             #print(data_provider.test_steps())
-             #print(list(data_provider.batch_test().size(0)))
-             #data = data_provider.batch_test()
-             #print(data)
-             #pred_ic50, uid_list= batch_test(model, device, data, config)
-             #print('hare : ', len(uid_list))
-             #print('hare : ', len(pred_ic50))
              for _ in range(data_provider.test_steps()):
                    data = data_provider.batch_test()
                    
