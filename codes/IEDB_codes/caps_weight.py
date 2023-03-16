@@ -39,7 +39,7 @@ def main():
     # load and prepare model
         path = folder + "/best_model_{}.pytorch".format(i)
         state_dict = torch.load(path)
-        model = Model(config)
+        model = Model(config, config.dropout)
         model.load_state_dict(state_dict)
         model.to(device)
         model.eval()
