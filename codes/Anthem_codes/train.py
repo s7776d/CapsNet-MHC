@@ -66,7 +66,7 @@ def train(config, data_provider,p):
 
     for i in range(config.model_count):
         log_to_file('begin training model #',i)
-        model = Model(config)
+        model = Model(config, config.dropout)
         weight_initial(model, config)
         model.to(device)
         
@@ -106,13 +106,7 @@ def train(config, data_provider,p):
                 data = data_provider.batch_train(i)
                 #print("***")
                 loss = batch_train(model, device, data, config)
-                # print("loss:",loss)
-                # exit()
-                # l2_lambda = 0.001
-                # l2_norm = sum(p.pow(2.0).sum()
-                #   for p in model.parameters())
- 
-                # loss = loss + l2_lambda * l2_norm
+    
                 loss.backward()
                 # clip grads
                 nn.utils.clip_grad_value_(model.parameters(), config.grad_clip)
@@ -127,9 +121,7 @@ def train(config, data_provider,p):
                 # validation on epoch end
 
             model.eval()
-            # print(data_provider.val_steps())
-            # print(data_provider.batch_index_val)
-            # validation_call
+         
             val_sample=[]
             val_pred=[]
             for _ in range(data_provider.val_steps()):
@@ -154,22 +146,7 @@ def train(config, data_provider,p):
             data_provider.new_epoch()
             # save last epoch model
             torch.save(model.state_dict(), os.path.join(config.working_dir, 'last_epoch_model_{}.pytorch'.format(p*config.model_count+i)))
-        #validation_call
-        val_path = os.path.join(config.working_dir, 'val_result_{}.csv'.format(p*config.model_count+i))
-
-        val_temp_list=[]    
-        for ii in range(len(val_sample)):
-            for jj in range(len(val_sample[ii])):
-                temp={"hla_a":val_sample[ii][jj][0],"peptide": val_sample[ii][jj][1], "ic50":val_sample[ii][jj][2], "pred_ic50": val_pred[ii][jj]}
-                val_temp_list.append(temp)
-        val_df=pd.DataFrame(val_temp_list)
-        val_df["up_ic50"] = 50000**val_df["ic50"]
-        val_df["up_pred_ic50"] = 50000**val_df["pred_ic50"]
-        val_df["binding"] = val_df["up_ic50"].apply(lambda x:1 if x<500 else 0)
-        val_df["pred_binding"]=val_df["up_pred_ic50"].apply(lambda x:1 if x<500 else 0)
-
-        # val_df.to_csv(val_path, sep=',',header=True,index=True)
-        # exit()
+      
 
 
 def main():
