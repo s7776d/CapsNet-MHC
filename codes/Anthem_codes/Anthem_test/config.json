@@ -15,11 +15,12 @@
         "batch_size": 1024,
         "loss_delta": 0.0001
     },
+    "dropout" : 0.5,
     "Paths": {
         "working_dir": "Anthem_test"
     },
     "Model": {
-    "encoding_method": "blosum",
+    	"encoding_method": "blosum",
 	"encoding_method2":"blosum"
     },
     "model_count": 5,
