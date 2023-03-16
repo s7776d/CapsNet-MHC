@@ -207,15 +207,15 @@ class Context_extractor(nn.Module):
 ##############
 class Predictor(nn.Module):
 
-    def __init__(self, input_size):
+    def __init__(self, input_size, dropout):
         super(Predictor, self).__init__()
         self.net = nn.Sequential(
             nn.Linear(input_size, 200),
             nn.LeakyReLU(),
-            nn.Dropout(0.5),
+            nn.Dropout(dropout),
             nn.Linear(200, 200),
             nn.LeakyReLU(),
-            nn.Dropout(0.5),
+            nn.Dropout(dropout),
 
             nn.Linear(200, 1)
         )
@@ -232,7 +232,7 @@ class Predictor(nn.Module):
 
 
 class Model(nn.Module):
-    def __init__(self, config):
+    def __init__(self, config, dropout):
         super(Model, self).__init__()
 
         self.encoder_hla_a2 = CNN_HLA_Encoder(23)
@@ -240,7 +240,7 @@ class Model(nn.Module):
         self.encoder_peptide2 = CNN_Peptide_Encoder(23)
         
         self.context_extractor2 = Context_extractor(11)
-        self.predictor = Predictor(self.context_extractor2.out_vector_dim)
+        self.predictor = Predictor(self.context_extractor2.out_vector_dim, dropout)
 
     def forward(self, hla_a_seqs, hla_a_mask, hla_a_seqs2, hla_a_mask2,peptides, pep_mask,peptides2,pep_mask2):
 
