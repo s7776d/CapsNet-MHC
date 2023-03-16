@@ -36,7 +36,7 @@ def batch_train(model, device, data, config):
     hla_a, hla_mask, hla_a2, hla_mask2,  pep, pep_mask, pep2, pep_mask2, ic50,samples = data
 
     pred_ic50= model(hla_a.to(device), hla_mask.to(device), hla_a2.to(device), hla_mask2.to(device), pep.to(device), pep_mask.to(device),pep2.to(device), pep_mask2.to(device))
-    loss = nn.BCELoss()(pred_ic50.to(config.cpu_device), ic50.view(ic50.size(0), 1))
+    loss = nn.MSELoss()(pred_ic50.to(config.cpu_device), ic50.view(ic50.size(0), 1))
 
     return loss
 
@@ -46,7 +46,7 @@ def batch_validation(model, device, data, config):
     with torch.no_grad():
     	 # validation_call
          pred_ic50= model(hla_a.to(device), hla_mask.to(device), hla_a2.to(device), hla_mask2.to(device), pep.to(device), pep_mask.to(device),pep2.to(device), pep_mask2.to(device))
-         loss = nn.BCELoss()( pred_ic50.to(config.cpu_device), ic50.view(ic50.size(0), 1))
+         loss = nn.MSELoss()( pred_ic50.to(config.cpu_device), ic50.view(ic50.size(0), 1))
          pred_ic50=pred_ic50.view(len(pred_ic50)).tolist()
          return loss,pred_ic50,samples
 
