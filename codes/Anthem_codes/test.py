@@ -53,7 +53,7 @@ def test(config, data_provider):
         for k in range(config.model_count):
     # load and prepare model
              state_dict = torch.load(config.model_save_path(p*config.model_count+k))
-             model = Model(config)
+             model = Model(config, config.dropout)
              model.load_state_dict(state_dict)
              model.to(device)
              model.eval()
