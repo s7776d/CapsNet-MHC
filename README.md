@@ -42,4 +42,4 @@ In each of the dataset and model folders, codes and data are included based on t
     4) Back to the directory "IEDB_codes". Run in the command line: <br>
     "python train.py IEDB_train/config.json". After the training process finishing, the networks will be output to "IEDB_train".
 
-The source code was adopted from DeepaAttentionPan code. https://github.com/jjin49/DeepAttentionPan
+For our implementation, the DeepAttentionPan source code (https://github.com/jjin49/DeepAttentionPan) was adopted with some required modifications and customization.
