@@ -184,6 +184,91 @@ class CNN_HLA_Encoder(nn.Module):
         y=self.conv1(y)
         return y
 
+    
+class CNN_HLA_Encoder_esmfold(nn.Module):
+    def __init__(self,input_dim):
+        super(CNN_HLA_Encoder_esmfold, self).__init__()
+
+        self.conv = torch.nn.Sequential()
+        
+        self.conv.add_module("conv_1", nn.Conv1d(input_dim, 512, kernel_size=3))
+        self.conv.add_module("bn_1",nn.BatchNorm1d(512))
+        self.conv.add_module("ReLU_1",nn.LeakyReLU())
+        self.conv.add_module("maxpool_1", torch.nn.MaxPool1d(kernel_size=2))
+        self.conv.add_module("conv_2", nn.Conv1d(512, 256, kernel_size=3))
+        self.conv.add_module("bn_2",nn.BatchNorm1d(256))
+        self.conv.add_module("ReLU_2",nn.LeakyReLU())
+        self.conv.add_module("maxpool_2", torch.nn.MaxPool1d(kernel_size=3))
+        self.conv.add_module("conv_3", nn.Conv1d(256, 128, kernel_size=4))
+        self.conv.add_module("bn_3",nn.BatchNorm1d(128))
+        self.conv.add_module("ReLU_3",nn.LeakyReLU())
+
+        self.att = Attention2(128,57)
+        self.conv1 = torch.nn.Sequential()
+
+        self.conv1.add_module("conv_4", nn.Conv1d(128, 64, kernel_size=3))
+        self.conv1.add_module("bn_4",nn.BatchNorm1d(64))
+        self.conv1.add_module("ReLU_4",nn.LeakyReLU())
+        self.conv1.add_module("maxpool_4", torch.nn.MaxPool1d(kernel_size=4))
+        self.conv1.add_module("conv_5", nn.Conv1d(64, 32, kernel_size=2))
+        self.conv1.add_module("bn_5",nn.BatchNorm1d(32))
+        self.conv1.add_module("ReLU_5",nn.LeakyReLU())
+        self.conv1.add_module("conv_6", nn.Conv1d(32, 20, kernel_size=2))
+        self.conv1.add_module("bn_6",nn.BatchNorm1d(20))
+        self.conv1.add_module("ReLU_6",nn.LeakyReLU())
+
+
+    def forward(self, x):
+        x = self.conv(x)
+        y, _ = self.att(x)
+        y = self.conv1(y)
+
+        return y
+
+class CNN_HLA_Encoder_esm(nn.Module):
+    def __init__(self, input_dim, batch_size):
+        self.batch_size = batch_size
+        super(CNN_HLA_Encoder_esm, self).__init__()
+
+        self.conv = torch.nn.Sequential()
+        
+        
+        self.conv.add_module("conv_1", nn.Conv1d(input_dim, 512, kernel_size=3))
+        self.conv.add_module("bn_1",nn.BatchNorm1d(512))
+        self.conv.add_module("ReLU_1",nn.LeakyReLU())
+        self.conv.add_module("maxpool_1", torch.nn.MaxPool1d(kernel_size=2))
+        self.conv.add_module("conv_2", nn.Conv1d(512, 256, kernel_size=3))
+        self.conv.add_module("bn_2",nn.BatchNorm1d(256))
+        self.conv.add_module("ReLU_2",nn.LeakyReLU())
+        self.conv.add_module("maxpool_2", torch.nn.MaxPool1d(kernel_size=3))
+        self.conv.add_module("conv_3", nn.Conv1d(256, 128, kernel_size=4))
+        self.conv.add_module("bn_3",nn.BatchNorm1d(128))
+        self.conv.add_module("ReLU_3",nn.LeakyReLU())
+
+        self.att = Attention2(128,58)
+        self.conv1 = torch.nn.Sequential()
+
+        self.conv1.add_module("conv_4", nn.Conv1d(128, 64, kernel_size=3))
+        self.conv1.add_module("bn_4",nn.BatchNorm1d(64))
+        self.conv1.add_module("ReLU_4",nn.LeakyReLU())
+        self.conv1.add_module("maxpool_4", torch.nn.MaxPool1d(kernel_size=4))
+        self.conv1.add_module("conv_5", nn.Conv1d(64, 32, kernel_size=3))
+        self.conv1.add_module("bn_5",nn.BatchNorm1d(32))
+        self.conv1.add_module("ReLU_5",nn.LeakyReLU())
+        self.conv1.add_module("conv_6", nn.Conv1d(32, 20, kernel_size=2))
+        self.conv1.add_module("bn_6",nn.BatchNorm1d(20))
+        self.conv1.add_module("ReLU_6",nn.LeakyReLU())
+
+
+    def forward(self, x):
+        # print(x.shape)
+        x = torch.reshape(x, (self.batch_size, 1280, 373)) # (bath_size, input_dim, seq_len)
+        x = self.conv(x)
+        y, _ = self.att(x)
+        y = self.conv1(y)
+
+        return y
+    
 class Attention(nn.Module):
     def __init__(self, in_channels,seq_length):
         super(Attention,self).__init__()
@@ -313,6 +398,8 @@ class Model(nn.Module):
         super(Model, self).__init__()
 
         self.encoder_hla_a2 = CNN_HLA_Encoder(23)
+        # self.encoder_hla_a2 = CNN_HLA_Encoder_esm(1280, config.batch_size)
+        # self.encoder_hla_a2 = CNN_HLA_Encoder_esmfold(366)
 
         self.encoder_peptide2 = CNN_Peptide_Encoder(23)
         
