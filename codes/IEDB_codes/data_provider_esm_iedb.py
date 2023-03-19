@@ -159,63 +159,6 @@ class DataProvider:
         if self.shuffle:
             random.shuffle(self.samples)
 
-
-    def read_weekly_data00(self):
-
-        with open(self.test_file) as in_file:
-            for line_num, line in enumerate(in_file):
-                if line_num == 0:
-                    continue
-
-                info = line.strip('\n').split('\t')
-                iedb_id = info[1]
-                alleles = info[2]
-                measure_type = info[4]
-                peptide = info[5]
-                org_pep=peptide[:]
-                if len(peptide) > self.max_len_pep:
-                    continue
-                hla_a = alleles
-                if hla_a not in self.hla_sequence :
-                    continue
-                uid = '{iedb_id}-{hla_a}-{peptide}-{measure_type}'.format(
-                    iedb_id=iedb_id,
-                    hla_a=hla_a,
-                    peptide=org_pep,
-                    measure_type=measure_type
-                )
-                # print(uid)
-                self.weekly_samples.append((hla_a,peptide, uid))
-            
-    def read_training_data00(self):
-
-        with open(self.data_file) as in_file:
-            for line_num, line in enumerate(in_file):
-                if line_num == 0:
-                    continue
-
-                info = line.strip('\n').split('\t')
-                # print(info)
-
-                hla_a = info[1]
-
-                if hla_a not in self.hla_sequence :
-                    continue
-
-                peptide = info[3]
-                if len(peptide) > self.max_len_pep:
-                    continue
-
-                ic50 = float(info[-1])
-                ic50=1-math.log(ic50,50000)
-
-                self.samples.append((hla_a,peptide, ic50))
-
-        if self.shuffle:
-            random.shuffle(self.samples)
-
-        # exit()
-
     def split_train_and_val(self):
 
         vd_count=math.ceil(len(self.samples)/max(self.model_count,5))
