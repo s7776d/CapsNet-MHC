@@ -153,62 +153,6 @@ class DataProvider:
             random.shuffle(self.samples)
 
 
-    def read_weekly_data00(self):
-
-        with open(self.test_file) as in_file:
-            for line_num, line in enumerate(in_file):
-                if line_num == 0:
-                    continue
-
-                info = line.strip('\n').split('\t')
-                iedb_id = info[1]
-                alleles = info[2]
-                measure_type = info[4]
-                peptide = info[5]
-                org_pep=peptide[:]
-                if len(peptide) > self.max_len_pep:
-                    continue
-                hla_a = alleles
-                if hla_a not in self.hla_sequence :
-                    continue
-                uid = '{iedb_id}-{hla_a}-{peptide}-{measure_type}'.format(
-                    iedb_id=iedb_id,
-                    hla_a=hla_a,
-                    peptide=org_pep,
-                    measure_type=measure_type
-                )
-                # print(uid)
-                self.weekly_samples.append((hla_a,peptide, uid))
-            
-    def read_training_data00(self):
-
-        with open(self.data_file) as in_file:
-            for line_num, line in enumerate(in_file):
-                if line_num == 0:
-                    continue
-
-                info = line.strip('\n').split('\t')
-                # print(info)
-
-                hla_a = info[1]
-
-                if hla_a not in self.hla_sequence :
-                    continue
-
-                peptide = info[3]
-                if len(peptide) > self.max_len_pep:
-                    continue
-
-                ic50 = float(info[-1])
-                ic50=1-math.log(ic50,50000)
-
-                self.samples.append((hla_a,peptide, ic50))
-
-        if self.shuffle:
-            random.shuffle(self.samples)
-
-        # exit()
-
     def split_train_and_val(self):
 
         vd_count=math.ceil(len(self.samples)/max(self.model_count,5))
@@ -293,8 +237,8 @@ class DataProvider:
             hla_a_mask.append(self.hla_encode_dict[hla_a_allele])
 
             if hla_a_allele not in self.hla_encode_dict2:
-                hla_a_tensor2 = self.sequence_encode_func2(self.hla_sequence[hla_a_allele])
-                self.hla_encode_dict2[hla_a_allele] = (hla_a_tensor2)
+                hla_a_tensor2, mask2 = self.sequence_encode_func2(self.hla_sequence[hla_a_allele], self.max_len_hla)
+                self.hla_encode_dict2[hla_a_allele] = (hla_a_tensor2, mask2)
 
             hla_a_tensors2.append(self.hla_encode_dict2[hla_a_allele][0])
             hla_a_mask2.append(self.hla_encode_dict2[hla_a_allele][1])
@@ -306,9 +250,10 @@ class DataProvider:
             pep_mask.append(self.pep_encode_dict[pep][1])
 
             if pep not in self.pep_encode_dict2:
-                pep_tensor2,_= self.sequence_encode_func2(pep, self.max_len_pep)
-                self.pep_encode_dict2[pep] = (pep_tensor2)
-            pep_tensors2.append(self.pep_encode_dict2[pep])
+                pep_tensor2, mask2 = self.sequence_encode_func2(pep, self.max_len_pep)
+                self.pep_encode_dict2[pep] = (pep_tensor2, mask2)
+            pep_tensors2.append(self.pep_encode_dict2[pep][0])
+            pep_mask2.append(self.pep_encode_dict2[pep][1])
             
 
 
@@ -348,9 +293,9 @@ class DataProvider:
                 torch.stack(hla_a_mask2, dim=0),
 
 
-                torch.stack(pep_tensors2, dim=0),
+                torch.stack(pep_tensors, dim=0),
                 torch.stack(pep_mask, dim=0),
-                pep_tensors2,
+                torch.stack(pep_tensors2, dim=0),
                 torch.stack(pep_mask2, dim=0),
 
                 torch.tensor(ic50_list),
@@ -365,7 +310,7 @@ class DataProvider:
                 torch.stack(hla_a_tensors2, dim=0),
                 torch.stack(hla_a_mask2, dim=0),
 
-                pep_tensors,
+                torch.stack(pep_tensors, dim=0),
                 torch.stack(pep_mask, dim=0),
                 torch.stack(pep_tensors2, dim=0),
                 torch.stack(pep_mask2, dim=0),
