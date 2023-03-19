@@ -159,7 +159,7 @@ class DataProvider:
 
     def read_hla_sequences(self):
 
-        file_path = os.path.join(BASE_DIR, '../..','Anthem_dataset',  'proteins_esmfold.txt')
+        file_path = os.path.join(BASE_DIR, '../..','datset/Anthem_dataset',  'proteins_esmfold.txt')
         with open(file_path, 'r') as in_file:
             for line_num, line in enumerate(in_file):
                 if line_num == 0:
