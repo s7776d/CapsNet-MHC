@@ -316,8 +316,8 @@ class DataProvider:
 
 
             if hla_a_allele not in self.hla_encode_dict2:
-                hla_a_tensor2 = self.sequence_encode_func2(self.hla_sequence[hla_a_allele])
-                self.hla_encode_dict2[hla_a_allele] = (hla_a_tensor2)
+                hla_a_tensor2, mask2 = self.sequence_encode_func2(self.hla_sequence[hla_a_allele], self.max_len_hla)
+                self.hla_encode_dict2[hla_a_allele] = (hla_a_tensor2, mask2)
 
             hla_a_tensors2.append(self.hla_encode_dict2[hla_a_allele][0])
             hla_a_mask2.append(self.hla_encode_dict2[hla_a_allele][1])
@@ -329,9 +329,10 @@ class DataProvider:
             pep_mask.append(self.pep_encode_dict[pep][1])
 
             if pep not in self.pep_encode_dict2:
-                pep_tensor2,_= self.sequence_encode_func2(pep, self.max_len_pep)
-                self.pep_encode_dict2[pep] = (pep_tensor2)
-            pep_tensors2.append(self.pep_encode_dict2[pep])
+                pep_tensor2, mask2 = self.sequence_encode_func2(pep, self.max_len_pep)
+                self.pep_encode_dict2[pep] = (pep_tensor2, mask2)
+            pep_tensors2.append(self.pep_encode_dict2[pep][0])
+            pep_mask2.append(self.pep_encode_dict2[pep][1])
             
 
 
@@ -372,9 +373,9 @@ class DataProvider:
                 torch.stack(hla_a_mask2, dim=0),
 
 
-                torch.stack(pep_tensors2, dim=0),
+                torch.stack(pep_tensors, dim=0),
                 torch.stack(pep_mask, dim=0),
-                pep_tensors2,
+                torch.stack(pep_tensors2, dim=0),
                 torch.stack(pep_mask2, dim=0),
 
                 torch.tensor(ic50_list),
@@ -389,7 +390,7 @@ class DataProvider:
                 torch.stack(hla_a_tensors2, dim=0),
                 torch.stack(hla_a_mask2, dim=0),
 
-                pep_tensors,
+                torch.stack(pep_tensors, dim=0),
                 torch.stack(pep_mask, dim=0),
                 torch.stack(pep_tensors2, dim=0),
                 torch.stack(pep_mask2, dim=0),
