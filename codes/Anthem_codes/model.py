@@ -320,6 +320,8 @@ class Model(nn.Module):
         super(Model, self).__init__()
 
         self.encoder_hla_a2 = CNN_HLA_Encoder(23)
+        # self.encoder_hla_a2 = CNN_HLA_Encoder_esm(1280, config.batch_size)
+        # self.encoder_hla_a2 = CNN_HLA_Encoder_esmfold(366)
 
         self.encoder_peptide2 = CNN_Peptide_Encoder(23)
         
